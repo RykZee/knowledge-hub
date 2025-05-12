@@ -1,0 +1,11 @@
+[project]
+name = "knowledge-hub"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi[standard]",
+    "chromadb<2.0.0,>=1.0.8",
+    "ollama<1.0.0,>=0.4.8"
+]
