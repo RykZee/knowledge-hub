@@ -9,3 +9,15 @@ dependencies = [
     "chromadb<2.0.0,>=1.0.8",
     "ollama<1.0.0,>=0.4.8"
 ]
+
+[tool.ruff]
+line-length = 100
+indent-width = 4
+
+[tool.ruff.lint]
+select = ["E", "F"]
+ignore = ["F401"]
+
+[tool.ruff.format]
+indent-style = "space"
+docstring-code-line-length = 100

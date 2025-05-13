@@ -1,18 +1,21 @@
-from fastapi import FastAPI, APIRouter, UploadFile, File, BackgroundTasks
-from uuid import uuid4
-from app.service.llm_service import query_llm
 import os
+from uuid import uuid4
+
+from fastapi import APIRouter, BackgroundTasks, FastAPI, File, UploadFile
+from fastapi.responses import StreamingResponse
+
 from app.model.models import QuestionPayload
+from app.service.llm_service import query_llm
 
 router = APIRouter()
+
 
 def noop(file_path, document_id, metadata):
     pass
 
+
 @router.post("/documents")
-async def upload_document(
-    file: UploadFile = File(...), background_tasks: BackgroundTasks = None
-):
+async def upload_document(file: UploadFile = File(...), background_tasks: BackgroundTasks = None):
     """Upload and process a document of type PDF/docx to be used for RAG"""
     document_id = str(uuid4())
     file_path = os.path.join("/", "tmp", f"{document_id}_{file.filename}")
@@ -32,11 +35,12 @@ async def upload_document(
 
 
 @router.post("/query")
-async def query(payload: QuestionPayload):
-    return query_llm(payload.question)
+async def query(payload: QuestionPayload, stream: bool = False):
+    return StreamingResponse(
+        query_llm(payload.question, stream=stream), media_type="text/event-stream"
+    )
 
 
 def create_app():
     app = FastAPI(title="Knowledge Hub")
-
     return app
